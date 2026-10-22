@@ -1,0 +1,48 @@
+# Vinn Caffe — APK Shop (web app untuk HP)
+
+Aplikasi toko kopi & makanan berbentuk website yang tampil seperti aplikasi HP (PWA): layar kunci PIN, menu, keranjang, checkout, pembayaran (simulasi), struk cetak/PDF, riwayat, dan dashboard admin. Data bisa disimpan di **Google Sheet** lewat Apps Script.
+
+## Coba cepat (mode lokal)
+1. Ekstrak zip, buka folder `vinn-caffe` di VS Code → jalankan dengan **Live Server** (atau `python3 -m http.server` lalu buka `http://localhost:8000`).
+2. PIN pembeli **1234**, PIN admin **246810**.
+3. Mode lokal menyimpan data di browser saja. Untuk Google Sheet, ikuti langkah di bawah.
+
+## Menyambungkan ke Google Sheet
+1. Buat Google Sheet baru → menu **Extensions › Apps Script**.
+2. Hapus isi `Code.gs` bawaan, tempel seluruh isi file `apps-script/Code.gs`, lalu **Save**.
+3. Pilih fungsi **`setup`** → **Run**, lalu beri izin (termasuk Google Drive untuk unggah gambar). Ini membuat 4 sheet otomatis:
+   - `Products` — kode, nama, kategori, harga, stok, ukuran + satuan, gambar, deskripsi, aktif (sudah berisi 20 menu)
+   - `Orders` — data transaksi (nomor, waktu, pembeli, antar/ambil, alamat, ongkir, subtotal, total, metode, status, uang diterima, kembalian)
+   - `OrderItems` — rincian barang tiap transaksi
+   - `Settings` — nama toko, alamat, telepon, jam buka, ongkir, PIN
+4. **Deploy › New deployment › Web app** → *Execute as*: **Me**, *Who has access*: **Anyone** → Deploy → salin URL berakhiran `/exec`.
+5. Tempel URL itu ke `SCRIPT_URL` di **`config.js`**, lalu unggah folder ke hosting HTTPS (Vercel, Netlify, GitHub Pages).
+6. Setiap kali `Code.gs` diubah: **Deploy › Manage deployments › Edit › New version**.
+
+Zona waktu transaksi di server memakai `Asia/Jakarta` (konstanta `TZ` di `Code.gs`).
+
+## Fitur
+- Layar kunci: tanggal, jam berjalan, status jaringan & baterai (jika browser mengizinkan), PIN ala HP. PIN pembeli masuk ke toko; PIN admin membuka dashboard.
+- 20 menu (10 kopi, 10 makanan) dengan gambar, harga, stok, ukuran (g/kg/ml/L); pencarian + filter kategori.
+- Keranjang: ubah jumlah (dibatasi stok), hapus, total otomatis.
+- Pengambilan: ambil di toko (alamat toko tampil) atau antar (nama penerima, HP, alamat; ongkir diatur admin). Tidak ada pelacakan kurir.
+- Checkout: rincian pesanan, ongkir, total. Pembayaran simulasi: Tunai (uang diterima + kembalian), Transfer BRI/BCA/BNI, QRIS, DANA/OVO/GoPay.
+- Struk: logo, nama & alamat toko, kontak, nomor transaksi, tanggal-jam, pembeli, barang, subtotal, ongkir, total, metode, status, uang diterima & kembalian. Tombol **Cetak / simpan PDF** (lebar kertas thermal 80 mm).
+- Stok berkurang otomatis setelah transaksi; stok habis → tombol beli nonaktif; admin mendapat notifikasi stok habis/menipis.
+- Admin: ringkasan hari ini, tambah/ubah/hapus menu (termasuk foto), atur stok, riwayat semua transaksi, ubah info toko, ongkir, dan PIN.
+
+## Yang perlu Anda sesuaikan
+- `config.js`: alamat, telepon, jam buka toko, nomor rekening/e-wallet (saat ini **contoh**), PIN awal.
+- Semua itu juga bisa diubah dari Admin › Pengaturan setelah login.
+
+## Catatan keamanan
+- Dengan Google Sheet, PIN dicek di server dan perintah admin selalu diverifikasi ulang, tetapi PIN disimpan sebagai teks di sheet `Settings`. Batasi akses edit Spreadsheet hanya untuk pemilik, dan ganti PIN awal.
+- Pembayaran hanya simulasi (tidak memproses uang asli).
+- Riwayat pembeli hanya tersimpan di perangkat yang dipakai; admin melihat semua transaksi dari Sheet.
+
+## Struktur
+```
+index.html  style.css  app.js  db.js  config.js  menu.js  sw.js  manifest.json
+apps-script/Code.gs   backend Google Sheets
+assets/  logo & ikon      images/  foto 20 menu
+```
