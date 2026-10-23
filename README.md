@@ -2,10 +2,22 @@
 
 Aplikasi toko kopi & makanan berbentuk website yang tampil seperti aplikasi HP (PWA): layar kunci PIN, menu, keranjang, checkout, pembayaran (simulasi), struk cetak/PDF, riwayat, dan dashboard admin. Data bisa disimpan di **Google Sheet** lewat Apps Script.
 
+## Tampilan
+- **Laptop/PC:** halaman otomatis tampil di dalam bingkai iPhone 15 (393×852, Dynamic Island, status bar, tombol samping) dan mengecil otomatis mengikuti tinggi jendela.
+- **HP/tablet:** tanpa bingkai, layar penuh seperti aplikasi.
+- Gaya aplikasi: font Inter, judul besar, tab bar & header translucent, bottom sheet, tombol dengan efek tekan, animasi pindah halaman.
+
+## Memasang sebagai aplikasi (PWA)
+- **Android/Chrome:** buka situsnya (HTTPS) → muncul tombol **Pasang aplikasi di layar utama** di layar PIN, atau menu ⋮ › *Install app*.
+- **iPhone/Safari:** Bagikan › **Tambah ke Layar Utama**.
+- **Desktop Chrome/Edge:** ikon pasang di address bar.
+- File PWA: `manifest.json` (ikon biasa + maskable, screenshot, shortcut Keranjang/Riwayat), `sw.js` (offline: semua file & foto menu di-cache; data Sheet selalu diambil langsung), `assets/icon-*.png`, `vercel.json` / `_headers` (header cache untuk Vercel / Netlify).
+- Setelah mengubah file, naikkan angka `CACHE` di `sw.js` (mis. `vinn-caffe-v4`) agar pengguna mendapat versi baru.
+
 ## Coba cepat (mode lokal)
 1. Ekstrak zip, buka folder `vinn-caffe` di VS Code → jalankan dengan **Live Server** (atau `python3 -m http.server` lalu buka `http://localhost:8000`).
 2. PIN pembeli **1234**, PIN admin **246810**.
-3. Mode lokal menyimpan data di browser saja. Untuk Google Sheet, ikuti langkah di bawah.
+3. `config.js` sudah berisi `SCRIPT_URL` Google Sheet. Kosongkan nilainya jika ingin mencoba mode lokal (data hanya di browser).
 
 ## Menyambungkan ke Google Sheet
 1. Buat Google Sheet baru → menu **Extensions › Apps Script**.
@@ -42,7 +54,7 @@ Zona waktu transaksi di server memakai `Asia/Jakarta` (konstanta `TZ` di `Code.g
 
 ## Struktur
 ```
-index.html  style.css  app.js  db.js  config.js  menu.js  sw.js  manifest.json
+index.html  style.css  app.js  db.js  config.js  menu.js  sw.js  manifest.json  vercel.json  _headers
 apps-script/Code.gs   backend Google Sheets
 assets/  logo & ikon      images/  foto 20 menu
 ```

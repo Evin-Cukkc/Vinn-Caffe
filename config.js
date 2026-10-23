@@ -1,10 +1,10 @@
 /* Pengaturan Vinn Caffe */
 const CONFIG = {
-  // Tempel URL Web App Apps Script (berakhiran /exec) di sini agar data tersimpan di Google Sheet.
+  // URL Web App Apps Script (berakhiran /exec) — data tersimpan di Google Sheet.
   // Dikosongkan = mode lokal (data hanya di browser, cocok untuk uji coba).
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzB5wyiRBHAgldE3Cb4duNDpcyhkvbEgRmS8--wqnVbsz1WCHK2AkkZEcz7MAbFT7VAsQ/exec",
   DEFAULT_USER_PIN: "1234",     // PIN pembeli (mode lokal / isi awal Sheet)
-  DEFAULT_ADMIN_PIN: "110407",  // PIN admin (mode lokal / isi awal Sheet)
+  DEFAULT_ADMIN_PIN: "246810",  // PIN admin (mode lokal / isi awal Sheet)
   LOW_STOCK: 5,                 // stok <= angka ini dianggap menipis
   SHOP: {
     shopName: "Vinn Caffe",

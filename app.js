@@ -33,24 +33,28 @@ function closeModal() { $("#modal").hidden = true; $("#modal").innerHTML = ""; d
 
 /* ================= layar kunci ================= */
 let pin = "", busy = false;
+const FRAME = matchMedia("screen and (min-width:700px) and (min-height:600px) and (hover:hover) and (pointer:fine)");
+const toTop = () => (FRAME.matches ? $("#scroll") : window).scrollTo(0, 0);
+function fit() { document.documentElement.style.setProperty("--k", Math.min(1, (innerHeight - 24) / 880, (innerWidth - 24) / 421).toFixed(3)); }
 function tick() {
-  const d = new Date();
-  $("#lkDate").textContent = d.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
-  $("#lkTime").textContent = [d.getHours(), d.getMinutes(), d.getSeconds()].map(n => String(n).padStart(2, "0")).join(":");
+  const d = new Date(); $("#sbTime").textContent = `${d.getHours()}:${String(d.getMinutes()).padStart(2, "0")}`;
+  $("#lkDate").textContent = d.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long" });
+  $("#lkTime").innerHTML = `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}<small>:${String(d.getSeconds()).padStart(2, "0")}</small>`;
 }
 function netInfo() {
   const c = navigator.connection || {}, on = navigator.onLine;
-  $("#stNet").innerHTML = `<i class="dot ${on ? "ok" : "no"}"></i>${on ? (c.effectiveType ? c.effectiveType.toUpperCase() : "Online") : "Offline"}`;
+  $$(".stNet").forEach(e => e.innerHTML = `<i class="dot ${on ? "ok" : "no"}"></i>${on ? (c.effectiveType ? c.effectiveType.toUpperCase() : "Online") : "Offline"}`);
 }
 async function batInfo() {
   try {
-    const b = await navigator.getBattery(), u = () => $("#stBat").textContent = `${b.charging ? "⚡ " : ""}${Math.round(b.level * 100)}%`;
-    u(); b.onlevelchange = b.onchargingchange = u;
-  } catch { $("#stBat").textContent = ""; }
+    const b = await navigator.getBattery(), u = () => $$(".stBat").forEach(e => e.textContent = `${b.charging ? "⚡ " : ""}${Math.round(b.level * 100)}%`);
+    u(); document.documentElement.style.setProperty("--lv", b.level); b.onlevelchange = b.onchargingchange = () => { u(); document.documentElement.style.setProperty("--lv", b.level); };
+  } catch { $$(".stBat").forEach(e => e.textContent = ""); }
 }
 function drawPad() {
-  $("#pad").innerHTML = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => `<button data-act="key" data-v="${n}" aria-label="${n}">${n}</button>`).join("") +
-    `<button class="fn" data-act="pclear">Hapus</button><button data-act="key" data-v="0" aria-label="0">0</button><button class="fn" data-act="pback" aria-label="Hapus satu digit">⌫</button>`;
+  const L = ["", "ABC", "DEF", "GHI", "JKL", "MNO", "PQRS", "TUV", "WXYZ"];
+  $("#pad").innerHTML = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => `<button data-act="key" data-v="${n}" aria-label="${n}">${n}<small>${L[n - 1]}</small></button>`).join("") +
+    `<button class="fn" data-act="pclear">Hapus</button><button data-act="key" data-v="0" aria-label="0">0<small></small></button><button class="fn" data-act="pback" aria-label="Hapus satu digit">⌫</button>`;
   $("#pad").insertAdjacentHTML("beforeend", `<span></span><button class="ok" data-act="pok">Masuk</button><span></span>`);
   dots();
 }
@@ -72,7 +76,7 @@ function enter() {
   sanitize(); nav(); go(S.role === "admin" ? "admin" : "menu");
   if (S.role === "admin") { const o = S.products.filter(p => p.active && p.stock === 0).length; if (o) toast(`${o} menu stok habis — cek dashboard`); }
 }
-function lockApp() { sessionStorage.removeItem("vc_role"); DB.setAuth(""); S.role = null; S.orders = null; S.co = null; $("#app").hidden = true; $("#lock").hidden = false; pin = ""; dots(); lockMsg("Masukkan PIN"); closeModal(); scrollTo(0, 0); }
+function lockApp() { sessionStorage.removeItem("vc_role"); DB.setAuth(""); S.role = null; S.orders = null; S.co = null; $("#app").hidden = true; $("#lock").hidden = false; pin = ""; dots(); lockMsg("Masukkan PIN"); closeModal(); toTop(); }
 
 /* ================= navigasi ================= */
 function nav() {
@@ -92,13 +96,13 @@ function go(t, keepScroll) {
   S.tab = t; $$(".view").forEach(v => v.hidden = v.id !== "v-" + t);
   const main = ["menu", "cart", "hist", "admin"].includes(t); $("#nav").hidden = !main;
   $$("#nav button").forEach(b => b.classList.toggle("on", b.dataset.t === t));
-  R[t](); if (!keepScroll) scrollTo(0, 0);
+  R[t](); if (!keepScroll) toTop();
 }
-const hdr = (title, back) => `<header class="hd">${back ? `<button class="ic" data-act="tab" data-t="${back}" aria-label="Kembali">${I.back}</button>` : ""}<h2>${title}</h2></header>`;
+const hdr = (title, back) => back ? `<header class="hd nav"><button class="ic" data-act="tab" data-t="${back}" aria-label="Kembali">${I.back}</button><h2>${title}</h2><span class="ic sp"></span></header>` : `<header class="hd big"><h2>${title}</h2></header>`;
 
 /* ================= menu ================= */
 R.menu = () => {
-  $("#v-menu").innerHTML = `<header class="hd"><div class="brand"><img src="assets/logo.svg" width="38" height="38" alt=""><div><b>${esc(S.settings.shopName)}</b><small>${S.role === "admin" ? "Mode admin" : "Kopi hangat, rasa yang menetap"}</small></div></div><button class="ic" data-act="lock" aria-label="Kunci aplikasi">${I.lock}</button></header>
+  $("#v-menu").innerHTML = `<header class="hd big"><div class="brand"><img src="assets/logo.svg" width="44" height="44" alt=""><div><h2>${esc(S.settings.shopName)}</h2><small>${S.role === "admin" ? "Mode admin" : "Kopi hangat, rasa yang menetap"}</small></div></div><button class="ic" data-act="lock" aria-label="Kunci aplikasi">${I.lock}</button></header>
   <div class="tools"><label class="search">${I.search}<input id="q" type="search" placeholder="Cari nama atau kode menu…" autocomplete="off" value="${esc(S.q)}" aria-label="Cari menu"></label><div class="chips" id="chips"></div></div>
   <p class="muted info" id="info"></p><div class="grid" id="grid"></div><p class="empty" id="none" hidden>Menu tidak ditemukan.<br>Coba kata kunci atau kategori lain.</p>`;
   grid();
@@ -396,14 +400,20 @@ addEventListener("keydown", e => {
   else if (!$("#lock").hidden && e.key === "Backspace") A.pback();
   else if (!$("#lock").hidden && e.key === "Enter") A.pok();
 });
-addEventListener("online", netInfo); addEventListener("offline", netInfo);
+addEventListener("resize", fit); fit();
+let deferred = null;
+addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred = e; $("#install").hidden = false; });
+$("#install").addEventListener("click", async () => { if (!deferred) return; deferred.prompt(); await deferred.userChoice; deferred = null; $("#install").hidden = true; });
+addEventListener("appinstalled", () => $("#install").hidden = true);
+if (/iphone|ipad|ipod/i.test(navigator.userAgent) && !(matchMedia("(display-mode: standalone)").matches || navigator.standalone)) $("#ioshint").hidden = false;
+ addEventListener("online", netInfo); addEventListener("offline", netInfo);
 
 /* ================= mulai ================= */
 (async function boot() {
   drawPad(); tick(); setInterval(tick, 1000); netInfo(); batInfo();
   try {
     const d = await DB.init(); S.products = d.products; S.settings = d.settings; $("#lkName").textContent = S.settings.shopName; document.title = S.settings.shopName;
-    const r = sessionStorage.getItem("vc_role"); if (r && (r !== "admin" || sessionStorage.getItem("vc_apin"))) { S.role = r; enter(); }
+    const r = sessionStorage.getItem("vc_role"); if (r && (r !== "admin" || sessionStorage.getItem("vc_apin"))) { S.role = r; enter(); const g = new URLSearchParams(location.search).get("go"); if (["cart", "hist"].includes(g)) go(g); }
   } catch (e) { lockMsg("Data belum termuat: " + e.message, true); S.settings = { ...CONFIG.SHOP }; }
   if ("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js").catch(() => {});
 })();
