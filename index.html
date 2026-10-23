@@ -24,43 +24,62 @@
 </head>
 <body>
 <div id="stage">
-  <aside class="side"><img src="assets/logo.svg" width="64" height="64" alt="Logo Vinn Caffe"><h2 id="sdName">Vinn Caffe</h2>
+  <!-- Sisi sidebar petunjuk untuk tampilan layar PC / Desktop -->
+  <aside class="side">
+    <img src="assets/logo.svg" width="64" height="64" alt="Logo Vinn Caffe">
+    <h2 id="sdName">Vinn Caffe</h2>
     <p class="lead">Pesan kopi dan makanan dari HP, bayar, lalu ambil di toko atau minta diantar.</p>
-    <dl><div><dt>Alamat</dt><dd id="sdAddr"></dd></div><div><dt>Jam buka</dt><dd id="sdHours"></dd></div><div><dt>Telepon</dt><dd id="sdPhone"></dd></div></dl>
-    <p class="hint">Di HP, aplikasi tampil layar penuh dan bisa dipasang di layar utama.</p></aside>
+    <dl>
+      <div><dt>Alamat</dt><dd id="sdAddr"></dd></div>
+      <div><dt>Jam buka</dt><dd id="sdHours"></dd></div>
+      <div><dt>Telepon</dt><dd id="sdPhone"></dd></div>
+    </dl>
+    <p class="hint">Di HP, aplikasi tampil layar penuh dan bisa dipasang di layar utama.</p>
+  </aside>
+
+  <!-- Bingkai Mockup Device HP -->
   <div id="device">
-  <i class="btn-a"></i><i class="btn-v1"></i><i class="btn-v2"></i><i class="btn-p"></i>
-  <div id="screen">
-    <div class="fsb" aria-hidden="true"><span class="fsbL"><span id="sbTime">9:41</span><span class="stNet"></span></span><span class="fsbR"><span class="stBat"></span></span></div>
-    <div class="island" aria-hidden="true"></div>
-    <div id="scroll">
-      <section id="lock" class="lock">
-        <div class="status"><span class="stNet"></span><span class="stBat"></span></div>
-        <div class="lk-brand"><img src="assets/logo.svg" width="64" height="64" alt="Logo Vinn Caffe"><h1 id="lkName">Vinn Caffe</h1></div>
-        <div class="clock"><div id="lkDate"></div><div id="lkTime">00:00</div></div>
-        <p class="lk-msg" id="lkMsg" role="status">Masukkan PIN</p>
-        <div class="dots" id="dots" aria-hidden="true"></div>
-        <div class="pad" id="pad"></div>
-        <button class="install" id="install" hidden>Pasang aplikasi di layar utama</button>
-        <p class="ioshint" id="ioshint" hidden>Untuk memasang di iPhone: ketuk Bagikan, lalu “Tambah ke Layar Utama”.</p>
-      </section>
-      <div id="app" hidden>
-        <main>
-          <section class="view" id="v-menu" hidden></section>
-          <section class="view" id="v-cart" hidden></section>
-          <section class="view" id="v-hist" hidden></section>
-          <section class="view" id="v-admin" hidden></section>
-          <section class="view" id="v-checkout" hidden></section>
-          <section class="view" id="v-receipt" hidden></section>
-        </main>
+    <i class="btn-a"></i><i class="btn-v1"></i><i class="btn-v2"></i><i class="btn-p"></i>
+    <div id="screen">
+      <div class="fsb" aria-hidden="true">
+        <span class="fsbL"><span id="sbTime">9:41</span><span class="stNet"></span></span>
+        <span class="fsbR"><span class="stBat"></span></span>
       </div>
+      <div class="island" aria-hidden="true"></div>
+      <div id="scroll">
+        <!-- Layar Kunci / Login PIN -->
+        <section id="lock" class="lock">
+          <div class="status"><span class="stNet"></span><span class="stBat"></span></div>
+          <div class="lk-brand"><img src="assets/logo.svg" width="64" height="64" alt="Logo Vinn Caffe"><h1 id="lkName">Vinn Caffe</h1></div>
+          <div class="clock"><div id="lkDate"></div><div id="lkTime">00:00</div></div>
+          <p class="lk-msg" id="lkMsg" role="status">Masukkan PIN</p>
+          <div class="dots" id="dots" aria-hidden="true"></div>
+          <div class="pad" id="pad"></div>
+          <button class="install" id="install" hidden>Pasang aplikasi di layar utama</button>
+          <p class="ioshint" id="ioshint" hidden>Untuk memasang di iPhone: ketuk Bagikan, lalu “Tambah ke Layar Utama”.</p>
+        </section>
+
+        <!-- Konten Utama Aplikasi Setelah Login -->
+        <div id="app" hidden>
+          <main>
+            <section class="view" id="v-menu" hidden></section>
+            <section class="view" id="v-cart" hidden></section>
+            <section class="view" id="v-hist" hidden></section>
+            <section class="view" id="v-admin" hidden></section>
+            <section class="view" id="v-checkout" hidden></section>
+            <section class="view" id="v-receipt" hidden></section>
+          </main>
+        </div>
+      </div>
+      <nav id="nav" hidden></nav>
+      <div class="overlay" id="modal" hidden></div>
+      <div class="toast" id="toast" role="status"></div>
+      <i class="homebar" aria-hidden="true"></i>
     </div>
-    <nav id="nav" hidden></nav>
-    <div class="overlay" id="modal" hidden></div>
-    <div class="toast" id="toast" role="status"></div>
-    <i class="homebar" aria-hidden="true"></i>
   </div>
-</div></div>
+</div>
+
+<!-- Pemanggilan File Script -->
 <script src="config.js"></script>
 <script src="menu.js"></script>
 <script src="db.js"></script>
